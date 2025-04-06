@@ -8,7 +8,7 @@ const {
     updateUserById, 
     deleteUserById, 
     loginUser 
-} = require('../user-controllers/userController');
+} = require('../controllers/userController');
 
 // const authMiddleware = require('../middlewares/authMiddleware');
 
