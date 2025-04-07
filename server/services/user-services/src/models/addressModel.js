@@ -8,11 +8,11 @@ const Address = sequelize.define('Address', {
         primaryKey: true,
         autoIncrement: true,
     },
-    userId: {
+    user_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: User, // Assuming you have a User model defined
+            model: User,
             key: 'id',
         },
         onDelete: 'CASCADE', // Optional: Delete addresses when the user is deleted
@@ -30,7 +30,7 @@ const Address = sequelize.define('Address', {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    zipCode: {
+    zip_code: {
         type: DataTypes.STRING,
         allowNull: false,
     },
