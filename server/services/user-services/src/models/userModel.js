@@ -7,11 +7,11 @@ const User = sequelize.define('User', {
         primaryKey: true,
         autoIncrement: true,
     },
-    firstName: {
+    first_name: {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    lastName: {
+    last_name: {
         type: DataTypes.STRING,
         allowNull: false,
     },
@@ -24,12 +24,17 @@ const User = sequelize.define('User', {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    createdAt: {
+    role : {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: 'user',
+    },
+    created_at: {
         type: DataTypes.DATE,
         allowNull: false,
         defaultValue: DataTypes.NOW,
     },
-    updatedAt: {
+    updated_at: {
         type: DataTypes.DATE,
         allowNull: false,
         defaultValue: DataTypes.NOW,

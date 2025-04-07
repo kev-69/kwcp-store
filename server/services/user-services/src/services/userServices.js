@@ -1,15 +1,6 @@
 const User = require('../models/userModel');
 
 const UserService = {
-    async getAllUsers() {
-        try {
-            const users = await User.findAll();
-            return users;
-        } catch (error) {
-            throw error;
-        }
-    },
-
     async createUser(userData) {
         try {
             const user = await User.create(userData);
@@ -62,19 +53,6 @@ const UserService = {
             throw error;
         }
     },
-
-    // async updateUserPassword(id, newPassword) {
-    //     try {
-    //         const user = await User.findByPk(id);
-    //         if (!user) {
-    //             throw new Error('User not found');
-    //         }
-    //         await user.update({ password: newPassword });
-    //         return user;
-    //     } catch (error) {
-    //         throw error;
-    //     }
-    // },
 };
 
 module.exports = UserService;
