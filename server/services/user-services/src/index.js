@@ -5,10 +5,9 @@ const sequelize = require("./config/userdb");
 const User = require('./models/userModel');
 const Address = require('./models/addressModel');
 
-
 const userRoutes = require('./routes/userRoutes');
 const addressRoutes = require('./routes/addressRoutes');
-// const authRoutes = require('./routes/authRoutes');
+const authRoutes = require('./routes/authRoutes');
 
 dotenv.config();
 
@@ -24,15 +23,17 @@ sequelize.sync({ force: false }) // Set to true to drop and recreate tables
         console.error("Error connecting to the database:", error);
     });
 
-
 // Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// user routes
 app.use("/user", userRoutes);
 app.use("/user/address", addressRoutes);
-// app.use("/auth", authRoutes);
+
+// auth routes
+app.use("/auth", authRoutes);
 
 // Define associations
 User.hasMany(Address, { foreignKey: 'userId', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
