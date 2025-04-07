@@ -13,6 +13,15 @@ app.use((err, req, res, next) => {
 });
 
 // PROXY CONFIGURATION FOR MICROSERVICES
+// Proxy for Admin Service
+app.use("/api", createProxyMiddleware({
+    target: process.env.ADMIN_SERVICE_URL,
+    changeOrigin: true,
+    pathRewrite: {
+        '^/api': '', // Remove /admin from the request path
+    },
+}));
+
 // Proxy for User Service
 app.use("/api", createProxyMiddleware({
     target: process.env.USER_SERVICE_URL,
