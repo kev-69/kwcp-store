@@ -33,20 +33,38 @@ const updateAddress = async (req, res) => {
     const addressId = req.params.id;
     const { user_id, street, city, state, zip_code } = req.body;
     try {
-        // Validate input
-        await check('user_id').notEmpty().withMessage('User ID is required').run(req);
-        await check('street').notEmpty().withMessage('Street is required').run(req);
-        await check('city').notEmpty().withMessage('City is required').run(req);
-        await check('state').notEmpty().withMessage('State is required').run(req);
-        await check('zip_code').notEmpty().withMessage('Zip code is required').run(req);
+        // Validate input if fields are provided
+        if (user_id !== undefined) {
+            await check('user_id').notEmpty().withMessage('User ID is required').run(req);
+        }
+        if (street !== undefined) {
+            await check('street').notEmpty().withMessage('Street is required').run(req);
+        }
+        if (city !== undefined) {
+            await check('city').notEmpty().withMessage('City is required').run(req);
+        }
+        if (state !== undefined) {
+            await check('state').notEmpty().withMessage('State is required').run(req);
+        }
+        if (zip_code !== undefined) {
+            await check('zip_code').notEmpty().withMessage('Zip code is required').run(req);
+        }
 
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
 
+        // Prepare fields to update
+        const fieldsToUpdate = {};
+        if (user_id !== undefined) fieldsToUpdate.user_id = user_id;
+        if (street !== undefined) fieldsToUpdate.street = street;
+        if (city !== undefined) fieldsToUpdate.city = city;
+        if (state !== undefined) fieldsToUpdate.state = state;
+        if (zip_code !== undefined) fieldsToUpdate.zip_code = zip_code;
+
         // Update address
-        const address = await AddressService.updateAddress(addressId, { user_id, street, city, state, zip_code });
+        const address = await AddressService.updateAddress(addressId, fieldsToUpdate);
         if (!address) {
             return res.status(404).json({ message: 'Address not found' });
         }
