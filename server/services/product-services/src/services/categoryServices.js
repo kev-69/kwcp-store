@@ -56,9 +56,6 @@ const CategoryServices = {
     async getCategoryByName(name) {
         try {
             const category = await Category.findOne({ where: { name } })
-            if (!category) {
-                throw new Error('Category not found')
-            }
             return category
         } catch (error) {
             throw error
