@@ -14,13 +14,13 @@ app.use((err, req, res, next) => {
 
 // PROXY CONFIGURATION FOR MICROSERVICES
 // Proxy for Admin Service
-app.use("/api", createProxyMiddleware({
-    target: process.env.ADMIN_SERVICE_URL,
-    changeOrigin: true,
-    pathRewrite: {
-        '^/api': '', // Remove /admin from the request path
-    },
-}));
+// app.use("/api", createProxyMiddleware({
+//     target: process.env.ADMIN_SERVICE_URL,
+//     changeOrigin: true,
+//     pathRewrite: {
+//         '^/api': '', // Remove /admin from the request path
+//     },
+// }));
 
 // Proxy for User Service
 app.use("/api", createProxyMiddleware({
@@ -32,13 +32,13 @@ app.use("/api", createProxyMiddleware({
 }));
 
 // Proxy for Product Service
-// app.use("/api", createProxyMiddleware({
-//     target: process.env.PRODUCT_SERVICE_URL,
-//     changeOrigin: true,
-//     pathRewrite: {
-//         '^/api': '', // Remove /api from the request path
-//     },
-// }));
+app.use("/api", createProxyMiddleware({
+    target: process.env.PRODUCT_SERVICE_URL,
+    changeOrigin: true,
+    pathRewrite: {
+        '^/api': '', // Remove /api from the request path
+    },
+}));
 
 // Proxy for Order Service
 // app.use("/api", createProxyMiddleware({
