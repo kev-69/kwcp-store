@@ -23,11 +23,11 @@ const getUserById = async (req, res) => {
 
 const updateUserById = async (req, res) => {
     const userId = req.params.id;
-    const { firstName, lastName, email, password } = req.body;
+    const { first_name, last_name, email, password } = req.body;
     try {
         // Validate input
-        await check('firstName').notEmpty().withMessage('First name is required').run(req);
-        await check('lastName').notEmpty().withMessage('Last name is required').run(req);
+        await check('first_name').notEmpty().withMessage('First name is required').run(req);
+        await check('last_name').notEmpty().withMessage('Last name is required').run(req);
         await check('email').isEmail().withMessage('Invalid email').run(req);
         await check('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long').run(req);
 
@@ -43,11 +43,11 @@ const updateUserById = async (req, res) => {
         }
 
         // Update user
-        const updatedUser = await UserService.updateUserById(userId, { firstName, lastName, email, password: hashedPassword });
+        const updatedUser = await UserService.updateUserById(userId, { first_name, last_name, email, password: hashedPassword });
         if (!updatedUser) {
             return res.status(404).json({ message: 'User not found' });
         }
-        res.status(200).json(updatedUser);
+        res.status(200).json({ message: "User updated successfully", updatedUser });
     } catch (error) {
         res.status(500).json({ message: 'Error updating user', error });
     }
