@@ -31,8 +31,8 @@ const Products = sequelize.define('Products', {
             model: Category,
             key: 'id',
         },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE', // When a category is deleted, all products in that category will also be deleted
+        onUpdate: 'CASCADE', // When a category is updated, the corresponding product's category_id will also be updated
     },
     image_urls: {
         type: DataTypes.ARRAY(DataTypes.STRING),
