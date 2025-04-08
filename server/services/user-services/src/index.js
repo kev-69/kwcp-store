@@ -36,9 +36,9 @@ app.use("/user/address", addressRoutes);
 app.use("/auth", authRoutes);
 
 // Define associations
-User.hasMany(Address, { foreignKey: 'userId', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
-Address.belongsTo(User, { foreignKey: 'userId', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
+User.hasMany(Address, { foreignKey: 'user_id', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
+Address.belongsTo(User, { foreignKey: 'user_id', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
 
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`Server is running on port http://localhost:${PORT}`);
 });
