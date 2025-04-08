@@ -1,4 +1,4 @@
-const CategoryService = require('../services/categoryServices');
+const CategoryServices = require('../services/categoryServices');
 const { check, validationResult } = require('express-validator');
 
 const dotenv = require('dotenv');
@@ -17,14 +17,14 @@ const addCategory = async (req, res) => {
             return res.status(400).json({ errors: errors.array() });
         }
 
-        // Check if user already exists
-        const existingCategory = await CategoryService.getCategoryByName(name);
+        // Check if category already exists
+        const existingCategory = await CategoryServices.getCategoryByName(name);
         if (existingCategory) {
             return res.status(400).json({ message: 'Category already exists' });
         }
 
         // Add category
-        const newCategory = await CategoryService.addCategory({ name, description });
+        const newCategory = await CategoryServices.addCategory({ name, description });
         res.status(201).json({ message: "New category successfully added", newCategory});
     } catch (error) {
         res.status(500).json({ message: 'Error adding category', error });
@@ -45,7 +45,7 @@ const updateCategoryById = async (req, res) => {
         }
 
         // Update category
-        const updatedCategory = await CategoryService.updateCategoryById(categoryId, { name, description });
+        const updatedCategory = await CategoryServices.updateCategoryById(categoryId, { name, description });
         if (!updatedCategory) {
             return res.status(404).json({ message: 'Category not found' });
         }
@@ -58,7 +58,7 @@ const updateCategoryById = async (req, res) => {
 const removeCategoryById = async (req, res) => {
     const categoryId = req.params.id;
     try {
-        const deletedCategory = await CategoryService.removeCategoryById(categoryId);
+        const deletedCategory = await CategoryServices.removeCategoryById(categoryId);
         if (!deletedCategory) {
             return res.status(404).json({ message: 'Category not found' });
         }
@@ -71,7 +71,7 @@ const removeCategoryById = async (req, res) => {
 const getCategoryById = async (req, res) => {
     const categoryId = req.params.id;
     try {
-        const category = await CategoryService.getCategoryById(categoryId);
+        const category = await CategoryServices.getCategoryById(categoryId);
         if (!category) {
             return res.status(404).json({ message: 'Category not found' });
         }
@@ -83,23 +83,10 @@ const getCategoryById = async (req, res) => {
 
 const getAllCategories = async (req, res) => {
     try {
-        const categories = await CategoryService.getAllCategories();
+        const categories = await CategoryServices.getAllCategories();
         res.status(200).json(categories);
     } catch (error) {
         res.status(500).json({ message: 'Error fetching categories', error });
-    }
-}
-
-const getCategoryByName = async (req, res) => {
-    const categoryName = req.params.name;
-    try {
-        const category = await CategoryService.getCategoryByName(categoryName);
-        if (!category) {
-            return res.status(404).json({ message: 'Category not found' });
-        }
-        res.status(200).json(category);
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching category', error });
     }
 }
 
@@ -109,5 +96,4 @@ module.exports = {
     removeCategoryById,
     getCategoryById,
     getAllCategories,
-    getCategoryByName
 }
