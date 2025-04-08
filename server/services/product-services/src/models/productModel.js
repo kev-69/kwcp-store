@@ -17,7 +17,7 @@ const Products = sequelize.define('Products', {
         allowNull: false,
     },
     price : {
-        type: DataTypes.INTEGER,
+        type: DataTypes.NUMERIC(10, 2), // Allows for prices with two decimal places
         allowNull: false
     },
     stock_quantity: {
