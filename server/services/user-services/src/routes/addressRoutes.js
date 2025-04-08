@@ -7,7 +7,7 @@ const {
     deleteAddress 
 } = require('../controllers/addressController');
 
-router.post('/create', createAddress);
+router.post('/add', createAddress);
 router.put('/update/:id', updateAddress);
 router.delete('/delete/:id', deleteAddress);
 
