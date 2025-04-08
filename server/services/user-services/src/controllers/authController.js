@@ -9,11 +9,11 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const createUser = async (req, res) => {
-    const { firstName, lastName, email, password } = req.body;
+    const { first_name, last_name, email, password } = req.body;
     try {
         // Validate input
-        await check('firstName').notEmpty().withMessage('First name is required').run(req);
-        await check('lastName').notEmpty().withMessage('Last name is required').run(req);
+        await check('first_name').notEmpty().withMessage('First name is required').run(req);
+        await check('last_name').notEmpty().withMessage('Last name is required').run(req);
         await check('email').isEmail().withMessage('Invalid email').run(req);
         await check('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long').run(req);
 
@@ -41,8 +41,8 @@ const createUser = async (req, res) => {
         
 
         // Create user
-        const newUser = await UserService.createUser({ firstName, lastName, email, password: hashedPassword });
-        res.status(201).json(newUser);
+        const newUser = await UserService.createUser({ first_name, last_name, email, password: hashedPassword });
+        res.status(201).json({ message: "User created successfully", user: newUser });
     } catch (error) {
         res.status(500).json({ message: 'Error creating user', error });
     }
