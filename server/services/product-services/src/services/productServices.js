@@ -21,13 +21,18 @@ const ProductServices = {
 
     async updateProductById(id, productData) {
         try {
+            // console.log('Updating product with ID:', id);
+            // console.log('Update data:', productData);
             const product = await Products.findByPk(id)
             if (!product) {
                 throw new Error('Product not found')
             }
             await product.update(productData)
+            // console.log('Product data before saving:', productData);
+            // console.log('Product updated successfully:', product.toJSON());
             return product
         } catch (error) {
+            console.error('Error in updateProductById:', error);
             throw error;
         }
     },
