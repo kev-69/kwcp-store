@@ -40,5 +40,5 @@ User.hasMany(Address, { foreignKey: 'user_id', onDelete: 'CASCADE', onUpdate: 'C
 Address.belongsTo(User, { foreignKey: 'user_id', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
 
 app.listen(PORT, () => {
-    console.log(`Server is running on port http://localhost:${PORT}`);
+    console.log(`Users server is running on http://localhost:${PORT}`);
 });
