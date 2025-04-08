@@ -1,6 +1,6 @@
 const sequelize = require('../config/productdb')
 const { DataTypes } = require('sequelize')
-const Category = require('./Categories')
+const Category = require('./categoryModel')
 
 const Products = sequelize.define('Products', {
     id: {
@@ -34,16 +34,13 @@ const Products = sequelize.define('Products', {
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
     },
-    created_at: {
-        type: DataTypes.DATE,
+    image_urls: {
+        type: DataTypes.ARRAY(DataTypes.STRING),
         allowNull: false,
-        defaultValue: DataTypes.NOW
-    }, 
-    updated_at: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW
-    }
+        validate: {
+            isUrl: true,
+        },
+    },
 },  {
     tableName: 'products'
 })
