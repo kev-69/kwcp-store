@@ -1,9 +1,6 @@
 const sequelize = require('../configs/ordersdb')
 const { DataTypes } = require('sequelize')
 
-const Products = require('../../../product-services/src/models/productModel')
-const User = require('../../../user-services/src/models/userModel')
-
 const Cart = sequelize.define('Cart', {
     id: {
         type: DataTypes.INTEGER,
@@ -14,7 +11,7 @@ const Cart = sequelize.define('Cart', {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: User,
+            model: "users",
             key: 'id',
         },
         onDelete: 'CASCADE', // When a user is deleted, all orders for that user will also be deleted
@@ -24,7 +21,7 @@ const Cart = sequelize.define('Cart', {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: Products,
+            model: "products",
             key: 'id',
         },
         onDelete: 'CASCADE', // When a product is deleted, all orders for that product will also be deleted
@@ -39,10 +36,10 @@ const Cart = sequelize.define('Cart', {
 })
 
 // Define associations
-Cart.belongsTo(User, { foreignKey: 'user_id', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
-User.hasMany(Cart, { foreignKey: 'user_id', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
+// Cart.belongsTo(User, { foreignKey: 'user_id', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
+// User.hasMany(Cart, { foreignKey: 'user_id', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
 
-Cart.belongsTo(Products, { foreignKey: 'product_id', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
-Products.hasMany(Cart, { foreignKey: 'product_id', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
+// Cart.belongsTo(Products, { foreignKey: 'product_id', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
+// Products.hasMany(Cart, { foreignKey: 'product_id', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
 
 module.exports = Cart
