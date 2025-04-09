@@ -35,17 +35,26 @@ const updateCategoryById = async (req, res) => {
     const categoryId = req.params.id;
     const { name, description } = req.body;
     try {
-        // Validate input
-        await check('name').notEmpty().withMessage('Category name is required').run(req);
-        await check('description').notEmpty().withMessage('Category description is required').run(req);
+        // Validate input if fields are provided
+        if (name !== undefined) {
+            await check('name').notEmpty().withMessage('Category name is required').run(req);
+        }
+        if (description !== undefined) {
+            await check('description').notEmpty().withMessage('Category description is required').run(req);
+        }
 
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
 
+        // Prepare update data
+        const updateData = {};
+        if (name !== undefined) updateData.name = name;
+        if (description !== undefined) updateData.description = description;
+
         // Update category
-        const updatedCategory = await CategoryServices.updateCategoryById(categoryId, { name, description });
+        const updatedCategory = await CategoryServices.updateCategoryById(categoryId, updateData);
         if (!updatedCategory) {
             return res.status(404).json({ message: 'Category not found' });
         }
