@@ -4,7 +4,7 @@ const cors = require('cors');
 const sequelize = require('./config/productdb');
 const Product = require('./models/productModel')
 const Category = require('./models/categoryModel')
-const Orders = require('../../order-services/src/models/orderModel')
+
 
 const productRoutes = require('./routes/productRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
@@ -40,9 +40,6 @@ app.use("/category", categoryRoutes)
 // Define associations
 Product.belongsTo(Category, { foreignKey: 'category_id', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
 Category.hasMany(Product, { foreignKey: 'category_id', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
-
-Product.hasMany(Orders, { foreignKey: 'product_id', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
-Orders.belongsTo(Product, { foreignKey: 'product_id', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
 
 app.listen(PORT, () => {
     console.log(`Products server is running on http://localhost:${PORT}`);
