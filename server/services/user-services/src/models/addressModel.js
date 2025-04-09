@@ -38,4 +38,8 @@ const Address = sequelize.define('Address', {
     tableName: 'addresses',
 });
 
+// Define associations
+Address.belongsTo(User, { foreignKey: 'user_id' }); // Each address belongs to a user
+User.hasMany(Address, { foreignKey: 'user_id' }); // A user can have multiple addresses
+
 module.exports = Address;
