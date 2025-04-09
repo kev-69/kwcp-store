@@ -23,22 +23,48 @@ app.use((err, req, res, next) => {
 // }));
 
 // Proxy for User Service
-app.use("/api", createProxyMiddleware({
+app.use("/api/users", createProxyMiddleware({
     target: process.env.USER_SERVICE_URL,
     changeOrigin: true,
     pathRewrite: {
-        '^/api': '', // Remove /api from the request path
+        '^/api/users': '', // Remove /api/users from the request path
     },
 }));
+// USER SERVICE ENDPOINTS
+// Address
+// POST address/add
+// PUT address/update/:id
+// DELETE address/delete/:id
+// Auth
+// POST /create
+// POST /login
+// POST /logout
+// User
+// GET user/:id
+// PUT user/update/:id
+// DELETE user/delete/:id
 
 // Proxy for Product Service
-app.use("/api", createProxyMiddleware({
+app.use("/api/products", createProxyMiddleware({
     target: process.env.PRODUCT_SERVICE_URL,
     changeOrigin: true,
     pathRewrite: {
-        '^/api': '', // Remove /api from the request path
+        '^/api/products': '', // Remove /api/product from the request path
     },
 }));
+// PRODUCT SERVICE ENDPOINTS
+// Product
+// product/add
+// product/all
+// product/:id
+// product/update/:id
+// product/delete/:id
+// Category
+// category/add
+// category/all
+// category/:id
+// category/update/:id
+// category/delete/:id
 
 // Proxy for Order Service
 // app.use("/api", createProxyMiddleware({
@@ -87,5 +113,5 @@ app.use("/api", createProxyMiddleware({
 
 // Start server
 app.listen(PORT, () => {
-    console.log(`API Gateway is running on port ${PORT}`);
+    console.log(`API Gateway is running on port http://localhost:${PORT}`);
 });
