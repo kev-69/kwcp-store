@@ -4,8 +4,8 @@ const { DataTypes } = require('sequelize')
 const Products = require('../../../product-services/src/models/productModel')
 const User = require('../../../user-services/src/models/userModel')
 
-console.log(User); // Debugging: Ensure this logs a valid Sequelize model
-console.log(Products); // Debugging: Ensure this logs a valid Sequelize model
+// console.log(User); // Debugging: Ensure this logs a valid Sequelize model
+// console.log(Products); // Debugging: Ensure this logs a valid Sequelize model
 
 const Orders = sequelize.define('Orders', {
     id: {
@@ -17,7 +17,7 @@ const Orders = sequelize.define('Orders', {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: User,
+            model: "users",
             key: 'id',
         },
         onDelete: 'CASCADE', // When a user is deleted, all orders for that user will also be deleted
@@ -36,10 +36,10 @@ const Orders = sequelize.define('Orders', {
 })
 
 // Define associations
-Orders.belongsTo(User, { foreignKey: 'user_id', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
-User.hasMany(Orders, { foreignKey: 'user_id', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
+// Orders.belongsTo(User, { foreignKey: 'user_id', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
+// User.hasMany(Orders, { foreignKey: 'user_id', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
 
-Orders.belongsTo(Products, { foreignKey: 'product_id', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
-Products.hasMany(Orders, { foreignKey: 'product_id', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
+// Orders.belongsTo(Products, { foreignKey: 'product_id', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
+// Products.hasMany(Orders, { foreignKey: 'product_id', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
 
 module.exports = Orders
