@@ -1,6 +1,8 @@
 const sequelize = require('../config/productdb')
 const { DataTypes } = require('sequelize')
 const Category = require('./categoryModel')
+// const Cart = require('../../../order-services/src/models/cartModel')
+// const Orders = require('../../../order-services/src/models/orderModel')
 
 const Products = sequelize.define('Products', {
     id: {
@@ -44,5 +46,9 @@ const Products = sequelize.define('Products', {
 },  {
     tableName: 'products'
 })
+
+// Define associations
+Products.belongsTo(Category, { foreignKey: 'category_id', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
+Category.hasMany(Products, { foreignKey: 'category_id', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
 
 module.exports = Products;
