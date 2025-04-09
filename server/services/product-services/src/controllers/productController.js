@@ -2,8 +2,8 @@ const ProductServices = require('../services/productServices')
 
 const { validationResult, check } = require('express-validator')
 
-const dotenv = require('dotenv')
-dotenv.config()
+// const dotenv = require('dotenv')
+// dotenv.config()
 
 const addProduct = async (req, res) => {
     try {
