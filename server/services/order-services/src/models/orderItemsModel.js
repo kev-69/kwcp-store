@@ -1,7 +1,6 @@
-const sequelize = require('../configs/ordersdb')
-const { DataTypes } = require('sequelize')
-
-const Orders = require('./orderModel')
+const sequelize = require('../configs/ordersdb');
+const { DataTypes } = require('sequelize');
+const Orders = require('./orderModel');
 
 const OrderItems = sequelize.define('OrderItems', {
     id: {
@@ -12,12 +11,10 @@ const OrderItems = sequelize.define('OrderItems', {
     order_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        reference: {
+        references: {
             model: Orders,
-            key: "id"
-        },
-        onDelete: "CASCADE",
-        onUpdate: "CASCADE"
+            key: 'id'
+        }
     },
     product_id: {
         type: DataTypes.INTEGER,
@@ -27,16 +24,13 @@ const OrderItems = sequelize.define('OrderItems', {
         type: DataTypes.INTEGER,
         allowNull: false,
     },
-    price: { // Store price at the time of purchase
+    price: {
         type: DataTypes.NUMERIC(10, 2),
-        allowNull: false,
+        allowNull: false
     }
 }, {
     tableName: 'order_items'
 });
 
-// Define associations
-OrderItems.belongsTo(Orders, { foreignKey: 'order_id', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
-Orders.hasMany(OrderItems, { foreignKey: 'order_id', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
 
-module.exports = OrderItems
+module.exports = OrderItems;
