@@ -1,108 +1,74 @@
-const { get } = require('../../../product-services/src/routes/productRoutes')
-const OrderServices = require('../services/orderServices')
-
-const { validateResult, check } = require('express-validator')
+const Order = require('../models/orderModel');
+const OrderItems = require('../models/orderItemsModel');
 
 const createOrder = async (req, res) => {
     try {
-        const { user_id, status, total_amount } = req.body
+        const { user_id, cart_items, total_amount } = req.body;
 
-        // Validate inputs
-        await check('user_id').notEmpty().withMessage('User Id is required').run(req)
-        await check('status').notEmpty().withMessage('Order tatus is required').run(req)
-        await check('total_amount').notEmpty().withMessage('Order total is required').run(req)
-
-        const errors = validateResult(req)
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() })
-        }
-
-        // Create order
-        const newOrder = await OrderServices.createOrder({
+        // Create the order
+        const order = await Order.create({
             user_id,
-            status,
-            total_amount
-        })
+            total_amount,
+            status: 'pending'
+        });
 
-        if (!newOrder) {
-            return res.status(400).json({ message: 'Error creating order' })
-        }
-        res.status(201).json({ message: "New order successfully added", newOrder })
+        // Add items to order_items table
+        const orderItems = cart_items.map(item => ({
+            order_id: order.id,
+            product_id: item.product_id,
+            quantity: item.quantity,
+            price: item.price,
+        }));
+
+        await OrderItems.bulkCreate(orderItems);
+
+        return res.status(201).json({ message: 'Order created successfully', order });
+
     } catch (error) {
-        res.status(500).json({ message: 'Error creating order', error })
+        return res.status(500).json({ error: error.message });
     }
-}
+};
 
 const getOrderById = async (req, res) => {
-    const orderId = req.params.id
+    const orderId = req.params.id;
     try {
-        const order = await OrderServices.retrieveOrder(orderId)
+        const order = await Order.findByPk(orderId, {
+            include: [{ model: OrderItems }]
+        });
         if (!order) {
-            return res.status(404).json({ message: 'Order not found' })
+            return res.status(404).json({ message: 'Order not found' });
         }
-        res.status(200).json(order)
+        return res.status(200).json(order);
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching order', error })
+        return res.status(500).json({ error: error.message });
     }
 }
 
 const updateOrderById = async (req, res) => {
-    const orderId = req.params.id
+    const orderId = req.params.id;
     try {
-        const { user_id, status, total_amount } = req.body
-
-        // build update object
-        const updateData = {}
-        if (user_id) updateData.user_id = user_id
-        if (status) updateData.status = status
-        if (total_amount) updateData.total_amount = total_amount
-
-        // ensure update object is not empty
-        if (Object.keys(updateData).length === 0) {
-            return res.status(400).json({ message: 'No fields to update' })
+        const order = await Order.findByPk(orderId);
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found' });
         }
-
-        // Validate inputs
-        await check('user_id').notEmpty().withMessage('User Id is required').run(req)
-        await check('status').notEmpty().withMessage('Order status is required').run(req)
-        await check('total_amount').notEmpty().withMessage('Order total is required').run(req)
-
-        const errors = validateResult(req)
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() })
-        }
-
-        // Update order
-        const updatedOrder = await OrderServices.updateOrderById(orderId, updateData)
-
-        if (!updatedOrder) {
-            return res.status(404).json({ message: 'Order not found' })
-        }
-        res.status(200).json({ message: "Order successfully updated", updatedOrder })
+        await order.update(req.body);
+        return res.status(200).json({ message: 'Order updated successfully', order });
     } catch (error) {
-        res.status(500).json({ message: 'Error updating order', error })
+        return res.status(500).json({ error: error.message });
     }
 }
 
 const deleteOrderById = async (req, res) => {
-    const orderId = req.params.id
+    const orderId = req.params.id;
     try {
-        const order = await OrderServices.removeOrderById(orderId)
+        const order = await Order.findByPk(orderId);
         if (!order) {
-            return res.status(404).json({ message: 'Order not found' })
+            return res.status(404).json({ message: 'Order not found' });
         }
-        res.status(200).json({ message: "Order successfully deleted" })
+        await order.destroy();
+        return res.status(200).json({ message: 'Order deleted successfully' });
     } catch (error) {
-        res.status(500).json({ message: 'Error deleting order', error })
-    }
-}
-
-const getAllOrders = async (req, res) => {
-    try {
-        const orders = await OrderServices.retrieveAllOrders()
-        res.status(200).json(orders)
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching orders', error })
+        return res.status(500).json({ error: error.message });
     }
 }
 
@@ -110,6 +76,5 @@ module.exports = {
     createOrder,
     getOrderById,
     updateOrderById,
-    deleteOrderById,
-    getAllOrders
-}
+    deleteOrderById
+};
