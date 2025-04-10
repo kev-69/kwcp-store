@@ -6,9 +6,7 @@ const sequelize = require('./configs/ordersdb')
 const Orders = require('./models/orderModel')
 const OrderItems = require('./models/orderItemsModel')
 
-// call routes
 const orderRoutes = require('./routes/orderRoutes')
-// const cartRoutes = require('./routes/cartRoutes')
 
 dotenv.config()
 
@@ -31,11 +29,10 @@ app.use(express.urlencoded({ extended: true }))
 
 // define routes
 app.use("/order", orderRoutes)
-// app.use("/cart", cartRoutes)
 
 // Define associations
 OrderItems.belongsTo(Orders, { foreignKey: 'order_id', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
-Orders.hasMany(OrderItems, { foreignKey: 'order_id', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
+Orders.hasMany(OrderItems, { foreignKey: 'order_id', onDelete: 'CASCADE', onUpdate: 'CASCADE', as: 'items' });
 
 app.listen(PORT, () => {
     console.log(`Orders server is running on http://localhost:${PORT}`);
