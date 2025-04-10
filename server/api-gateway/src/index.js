@@ -54,26 +54,32 @@ app.use("/api/products", createProxyMiddleware({
 }));
 // PRODUCT SERVICE ENDPOINTS
 // Product
-// product/add
-// product/all
-// product/:id
-// product/update/:id
-// product/delete/:id
+// POST product/add
+// GET product/all
+// GET product/:id
+// PUT product/update/:id
+// DELETE product/delete/:id
 // Category
-// category/add
-// category/all
-// category/:id
-// category/update/:id
-// category/delete/:id
+// POST category/add
+// GET category/all
+// GET category/:id
+// PUT category/update/:id
+// DELETE category/delete/:id
 
 // Proxy for Order Service
-// app.use("/api", createProxyMiddleware({
-//     target: process.env.ORDER_SERVICE_URL,
-//     changeOrigin: true,
-//     pathRewrite: {
-//         '^/api': '', // Remove /api from the request path
-//     },
-// }));
+app.use("/api/orders", createProxyMiddleware({
+    target: process.env.ORDER_SERVICE_URL,
+    changeOrigin: true,
+    pathRewrite: {
+        '^/api': '', // Remove /api from the request path
+    },
+}));
+// ORDER SERVICE ENDPOINTS
+// POST order/add
+// GET order/all
+// GET order/:id
+// UPDATE order/update/:id
+// DELETE order/delete/:id
 
 // Proxy for Payment Service
 // app.use("/api", createProxyMiddleware({
