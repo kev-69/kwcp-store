@@ -37,6 +37,45 @@ const viewCart = async (req, res) => {
     }
 }
 
+// remove item from cart
+const removeFromCart = async (req, res) => {
+    try {
+        const { user_id, product_id } = req.params
+        const cartKey = `cart:${user_id}`
+        const itemKey = `${product_id}`
+
+        const itemExists = await redisClient.hExists(cartKey, itemKey)
+        if (!itemExists) {
+            return res.status(404).json({ message: "Item not found in cart" })
+        }
+        // remove item from redis cart
+        await redisClient.hDel(cartKey, itemKey)
+        return res.status(200).json({ message: "Item removed from cart" })
+    } catch (error) {
+        return res.status(500).json({ error: error })
+    }
+};
+
+// clear cart
+const clearCart = async (req, res) => {
+    try {
+        const { user_id } = req.params
+        const cartKey = `cart:${user_id}`
+
+        // check if cart exists
+        const cartExists = await redisClient.exists(cartKey)
+        if (!cartExists) {
+            return res.status(404).json({ message: "Cart not found" })
+        }
+
+        // clear cart
+        await redisClient.del(cartKey)
+        return res.status(200).json({ message: "Cart cleared successfully" })
+    } catch (error) {
+        return res.status(500).json({ error: error })
+    }
+};
+
 const checkout = async (req, res) => {
     try {
         const { user_id, total_amount, status } = req.body
@@ -68,24 +107,6 @@ const checkout = async (req, res) => {
         return res.status(500).json({ error: error })
     }
 }
-// Remove the createOrder function as it is redundant and handle order creation in the checkout function
-// const createOrder = async (req, res) => {
-//     try {
-//         const { user_id, total_amount, status, items } = req.body;
-//         if (!items || items.length === 0) return res.status(400).json({ message: "Order must have at least one item" });
-
-//         // Validate order data
-//         await check('user_id').isInt().withMessage('User ID must be an integer').run(req);
-//         await check('total_amount').isFloat({ min: 0 }).withMessage('Total amount must be a positive number').run(req);
-//         await check('status').isIn(['pending', 'processing', 'shipped', 'delivered', 'cancelled']).withMessage('Invalid order status').run(req);
-//         await check('items').isArray().withMessage('Items must be an array').run(req);
-
-//         const order = await OrderServices.createOrder({ user_id, total_amount, status, items });
-//         return res.status(201).json(order);
-//     } catch (error) {
-//         return res.status(500).json({ error: error.message });
-//     }
-// };
 
 const getOrderById = async (req, res) => {
     try {
@@ -130,6 +151,8 @@ const getAllOrders = async (req, res) => {
 module.exports = { 
     addToCart,
     viewCart,
+    removeFromCart,
+    clearCart,
     checkout,
     // createOrder, 
     getOrderById, 
