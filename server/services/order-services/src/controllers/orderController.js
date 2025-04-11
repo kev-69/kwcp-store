@@ -3,7 +3,6 @@ const redisClient = require('../configs/redis'); // Redis client setup
 
 const { check, validationResult } = require('express-validator');
 
-
 const addToCart = async (req, res) => {
     try {
         const { user_id, product_id, quantity, price } = req.body
@@ -25,7 +24,7 @@ const addToCart = async (req, res) => {
 
 const viewCart = async (req, res) => {
     try {
-        const { user_id } = req.body
+        const { user_id } = req.params
         const cartKey = `cart:${user_id}`
 
         // retrieve cart items from redis
@@ -55,6 +54,12 @@ const checkout = async (req, res) => {
         // save order to database
         const order = await OrderServices.createOrder({ user_id, total_amount, status, items })
 
+        // validate order data
+        await check('user_id').isInt().withMessage('User ID must be an integer').run(req);
+        await check('total_amount').isFloat({ min: 0 }).withMessage('Total amount must be a positive number').run(req);
+        await check('status').isIn(['pending', 'processing', 'shipped', 'delivered', 'cancelled']).withMessage('Invalid order status').run(req);
+        await check('items').isArray().withMessage('Items must be an array').run(req);
+
         // clear cart after checkout
         await redisClient.del(cartKey);
 
@@ -63,24 +68,24 @@ const checkout = async (req, res) => {
         return res.status(500).json({ error: error })
     }
 }
+// Remove the createOrder function as it is redundant and handle order creation in the checkout function
+// const createOrder = async (req, res) => {
+//     try {
+//         const { user_id, total_amount, status, items } = req.body;
+//         if (!items || items.length === 0) return res.status(400).json({ message: "Order must have at least one item" });
 
-const createOrder = async (req, res) => {
-    try {
-        const { user_id, total_amount, status, items } = req.body;
-        if (!items || items.length === 0) return res.status(400).json({ message: "Order must have at least one item" });
+//         // Validate order data
+//         await check('user_id').isInt().withMessage('User ID must be an integer').run(req);
+//         await check('total_amount').isFloat({ min: 0 }).withMessage('Total amount must be a positive number').run(req);
+//         await check('status').isIn(['pending', 'processing', 'shipped', 'delivered', 'cancelled']).withMessage('Invalid order status').run(req);
+//         await check('items').isArray().withMessage('Items must be an array').run(req);
 
-        // Validate order data
-        await check('user_id').isInt().withMessage('User ID must be an integer').run(req);
-        await check('total_amount').isFloat({ min: 0 }).withMessage('Total amount must be a positive number').run(req);
-        await check('status').isIn(['pending', 'processing', 'shipped', 'delivered', 'cancelled']).withMessage('Invalid order status').run(req);
-        await check('items').isArray().withMessage('Items must be an array').run(req);
-
-        const order = await OrderServices.createOrder({ user_id, total_amount, status, items });
-        return res.status(201).json(order);
-    } catch (error) {
-        return res.status(500).json({ error: error.message });
-    }
-};
+//         const order = await OrderServices.createOrder({ user_id, total_amount, status, items });
+//         return res.status(201).json(order);
+//     } catch (error) {
+//         return res.status(500).json({ error: error.message });
+//     }
+// };
 
 const getOrderById = async (req, res) => {
     try {
@@ -126,7 +131,7 @@ module.exports = {
     addToCart,
     viewCart,
     checkout,
-    createOrder, 
+    // createOrder, 
     getOrderById, 
     updateOrderById, 
     deleteOrderById, 
