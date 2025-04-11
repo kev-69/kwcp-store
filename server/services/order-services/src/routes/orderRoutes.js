@@ -5,7 +5,7 @@ const {
     addToCart,
     viewCart,
     checkout,
-    createOrder,
+    // createOrder,
     getAllOrders,
     getOrderById,
     updateOrderById,
@@ -19,6 +19,7 @@ router.post('/cart/checkout', checkout)
 
 // router.post('/add', createOrder);
 // Removed the direct create order route as orders are created through checkout
+router.get('/all', getAllOrders);
 router.get('/:id', getOrderById);
 router.put('/update/:id', updateOrderById);
 router.delete('/delete/:id', deleteOrderById);
