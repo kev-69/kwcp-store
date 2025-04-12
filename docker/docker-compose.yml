@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  user-service:
+    build:
+      context: ../server/services/user-services
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      - PG_HOST=postgres
+      - PG_PORT=5432
+      - PG_DATABASE=userdb
+      - PG_USER=postgres
+      - PG_PASSWORD=yourpassword
+    depends_on:
+      - postgres
+
+  product-service:
+    build:
+      context: ../server/services/product-services
+      dockerfile: Dockerfile
+    ports:
+      - "3002:3002"
+    environment:
+      - PG_HOST=postgres
+      - PG_PORT=5432
+      - PG_DATABASE=productdb
+      - PG_USER=postgres
+      - PG_PASSWORD=yourpassword
+    depends_on:
+      - postgres
+
+  order-service:
+    build:
+      context: ../server/services/order-services
+      dockerfile: Dockerfile
+    ports:
+      - "3007:3007"
+    environment:
+      - PG_HOST=postgres
+      - PG_PORT=5432
+      - PG_DATABASE=orderdb
+      - PG_USER=postgres
+      - PG_PASSWORD=yourpassword
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - postgres
+      - redis
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: yourpassword
+    ports:
+      - "5432:5432"
+
+  api-gateway:
+    build:
+      context: ../server/api-gateway
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - user-service
+      - product-service
+      - order-service
